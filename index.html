@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Github Favorites</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>Github Favorites</h1>
+        <div class="search">
+          <label for="input-search">User Github</label>
+          <input id="input-search" type="text" placeholder="User Github" />
+          <button>&plus;</button>
+        </div>
+      </header>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Repository</th>
+            <th>Followers</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="user">
+              <img
+                src="https://github.com/fernadias.png"
+                alt="Image of Fernanda Dias"
+              />
+              <a href="https://github.com/fernadias" target="_blank">
+                <p>Fernanda Dias</p>
+                <span>FernaDias</span>
+              </a>
+            </td>
+            <td class="repositories">76</td>
+            <td class="followers">9586</td>
+            <td><button>&times;</button></td>
+          </tr>
+          <tr>
+            <td class="user">
+              <img
+                src="https://github.com/maykbrito.png"
+                alt="Image of Fernanda Dias"
+              />
+              <a href="https://github.com/maykbrito" target="_blank">
+                <p>Mayk Brito</p>
+                <span>maykbrito</span>
+              </a>
+            </td>
+            <td class="repositories">76</td>
+            <td class="followers">9586</td>
+            <td><button>&times;</button></td>
+          </tr>
+        </tbody>
+        <tfoot></tfoot>
+      </table>
+    </div>
+  </body>
+</html>
