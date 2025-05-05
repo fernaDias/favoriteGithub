@@ -30,6 +30,10 @@ export class Favorites {
     ];
   }
 
+  async add(username) {
+    const user = await GithubUser.search(username);
+  }
+
   delete(user) {
     const filteredEntreis = this.entries.filter(
       (entry) => entry.login !== user.login
@@ -37,6 +41,7 @@ export class Favorites {
 
     this.entries = filteredEntreis;
     this.update();
+    this.onAdd();
   }
 }
 
@@ -46,6 +51,16 @@ export class FavoritesView extends Favorites {
     super(root);
     this.tbody = this.root.querySelector("table tbody");
     this.update();
+  }
+
+  onAdd() {
+    const addButton = this.root.querySelector(".search button");
+    const input = this.root.querySelector(".search input");
+
+    addButton.onclick = () => {
+      const { value } = input;
+      this.add(value);
+    };
   }
 
   update() {
@@ -97,6 +112,7 @@ export class FavoritesView extends Favorites {
   }
 
   removeAllTr() {
+    // biome-ignore lint/complexity/noForEach: <explanation>
     this.tbody.querySelectorAll("tr").forEach((tr) => {
       tr.remove();
     });
