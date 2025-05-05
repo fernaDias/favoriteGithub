@@ -16,22 +16,30 @@ export class Favorites {
   constructor(root) {
     this.root = document.querySelector(root);
     this.load();
-    GithubUser.search("fernadias").then((user) => {
-      console.log(user);
-    });
   }
 
   load() {
-    const entries = JSON.parse(localStorage.getItem("@github-favorites")) || [];
-    this.entries = [
-      { login: "fernadias", public_repos: 76, followers: 86 },
-      { login: "MaykBrito", public_repos: 106, followers: 2000 },
-      { login: "diego3g", public_repos: 789, followers: 3000 },
-    ];
+    this.entries = JSON.parse(localStorage.getItem("@github-favorites")) || [];
+  }
+
+  save() {
+    localStorage.setItem("@github-favorites", JSON.stringify(this.entries));
   }
 
   async add(username) {
-    const user = await GithubUser.search(username);
+    try {
+      const user = await GithubUser.search(username);
+
+      if (user.login === undefined) {
+        throw new Error("User not found");
+      }
+
+      this.entries = [user, ...this.entries];
+      this.update();
+      this.save();
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   delete(user) {
@@ -41,7 +49,7 @@ export class Favorites {
 
     this.entries = filteredEntreis;
     this.update();
-    this.onAdd();
+    this.save();
   }
 }
 
@@ -51,13 +59,14 @@ export class FavoritesView extends Favorites {
     super(root);
     this.tbody = this.root.querySelector("table tbody");
     this.update();
+    this.onAdd();
   }
 
   onAdd() {
     const addButton = this.root.querySelector(".search button");
-    const input = this.root.querySelector(".search input");
 
     addButton.onclick = () => {
+      const input = this.root.querySelector(".search input");
       const { value } = input;
       this.add(value);
     };
@@ -66,8 +75,7 @@ export class FavoritesView extends Favorites {
   update() {
     this.removeAllTr();
 
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    this.entries.forEach((user) => {
+    for (const user of this.entries) {
       const row = this.createRow(user);
 
       row.querySelector(
@@ -79,7 +87,7 @@ export class FavoritesView extends Favorites {
       row.querySelector(".repositories").textContent = user.public_repos;
       row.querySelector(".followers").textContent = user.followers;
 
-      row.querySelector(".remove").onClick = () => {
+      row.querySelector(".remove").onclick = () => {
         const isOk = confirm("Are you sure you want to remove this user?");
         if (isOk) {
           this.delete(user);
@@ -87,7 +95,7 @@ export class FavoritesView extends Favorites {
       };
 
       this.tbody.append(row);
-    });
+    }
   }
 
   createRow(user) {
@@ -112,9 +120,8 @@ export class FavoritesView extends Favorites {
   }
 
   removeAllTr() {
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    this.tbody.querySelectorAll("tr").forEach((tr) => {
+    for (const tr of this.tbody.querySelectorAll("tr")) {
       tr.remove();
-    });
+    }
   }
 }
